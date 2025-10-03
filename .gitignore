@@ -1,0 +1,12 @@
+# Root .gitignore for the repository
+# Ignore node modules for all packages in this repo
+node_modules/
+
+# npm debug log
+npm-debug.log*
+
+# Yarn integrity file
+.yarn-integrity
+
+# Optional: ignore local env files
+.env

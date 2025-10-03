@@ -1,0 +1,17 @@
+{
+  "name": "meddisupply-web",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "prepare:tailwind": "npx tailwindcss init -p",
+    "tailwind:build": "npx tailwindcss -i ./src/styles.scss -o ./src/tailwind.css --minify",
+    "tailwind:watch": "npx tailwindcss -i ./src/styles.scss -o ./src/tailwind.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0"
+  }
+}
