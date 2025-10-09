@@ -1,0 +1,78 @@
+name: CI & CD Angular Portal → AWS ECR
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: medisupply
+  IMAGE_PREFIX: portal-web
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ---- Node/Angular toolchain ----
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: ./medisupply-app
+        run: npm ci
+
+      # Lints/tests (opcional, no rompe si no hay)
+      - name: Lint (if present)
+        working-directory: ./medisupply-app
+        run: npm run lint --if-present
+
+      - name: Unit tests (if present)
+        working-directory: ./medisupply-app
+        run: npm test --if-present -- --watch=false
+
+      # ---- AWS OIDC ----
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # ---- Docker metadata (tags útiles) ----
+      - name: Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}
+          tags: |
+            type=sha,prefix=${{ env.IMAGE_PREFIX }}-
+            type=ref,event=branch,prefix=${{ env.IMAGE_PREFIX }}-
+            type=raw,value=${{ env.IMAGE_PREFIX }}-latest,enable={{is_default_branch}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./medisupply-app
+          file: ./medisupply-app/Dockerfile
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
