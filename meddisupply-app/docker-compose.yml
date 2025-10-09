@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  web:
+    image: meddisupply:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    restart: unless-stopped
+
+  # Optional development service: mounts the source and runs ng serve for hot-reload.
+  dev:
+    image: node:22-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app:delegated
+      - /app/node_modules
+    command: sh -c "npm ci && npm start -- --host 0.0.0.0 --port 4200"
+    ports:
+      - "4201:4200"
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    stdin_open: true
+    tty: true

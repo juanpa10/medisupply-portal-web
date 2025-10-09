@@ -1,5 +1,8 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, ValueProvider, InjectionToken } from '@angular/core';
 import { provideRouter, Routes } from '@angular/router';
+import { importProvidersFrom } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { API_BASE_URL } from './services/auth.service';
 import { LoginWebComponent } from './components/auth/login-web/login-web.component';
 import { NavbarComponent } from './components/navigation/navbar/navbar.component';
 import { ProductManagementComponent } from './components/web/product-management/product-management.component';
@@ -33,3 +36,17 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes)
   ]
 };
+
+// Provide API base URL token with a runtime-friendly default. You can override
+// the global `window['APP_API_BASE']` before the app boots to change this.
+export const apiBaseProvider: ValueProvider = {
+  provide: API_BASE_URL,
+  useValue: (typeof window !== 'undefined' && (window as any).APP_API_BASE) ? (window as any).APP_API_BASE : 'http://localhost:9001'
+};
+
+// Note: to use the `AuthService` we need HttpClient available; importing providers
+// from HttpClientModule here makes it available app-wide when using standalone bootstrapping.
+export const appProviders = [
+  importProvidersFrom(HttpClientModule),
+  apiBaseProvider
+];

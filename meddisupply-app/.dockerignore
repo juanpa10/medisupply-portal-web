@@ -1,0 +1,11 @@
+node_modules
+dist
+.git
+.github
+tmp
+*.log
+src/**/*.spec.ts
+coverage
+.vscode
+/.idea
+npm-debug.log
