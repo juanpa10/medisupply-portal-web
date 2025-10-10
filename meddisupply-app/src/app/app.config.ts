@@ -10,6 +10,7 @@ import { PurchaseManagementComponent } from './components/web/purchase-managemen
 import { SalesClientsComponent } from './components/web/sales-clients/sales-clients.component';
 import { LogisticsInventoryComponent } from './components/web/logistics-inventory/logistics-inventory.component';
 import { SecurityAuditComponent } from './components/web/security-audit/security-audit.component';
+import { ProvidersRegistrationComponent } from './components/web/providers-registration/providers-registration.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -19,6 +20,7 @@ const routes: Routes = [
     component: NavbarComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'product-management' },
+  { path: 'providers-registration', component: ProvidersRegistrationComponent },
       { path: 'product-management', component: ProductManagementComponent },
       { path: 'purchase-management', component: PurchaseManagementComponent },
       { path: 'sales-clients', component: SalesClientsComponent },

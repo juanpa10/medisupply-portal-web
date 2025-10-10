@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { IconComponent } from '../../shared/icon/icon.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   template: `
     <header class="bg-white shadow-md">
       <div class="container mx-auto px-4 py-3 flex items-center justify-between">
@@ -17,6 +18,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
         </div>
 
         <nav class="hidden md:flex space-x-4 items-center">
+          <a routerLink="/app/providers-registration" class="text-sm hover:text-blue-600 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"></path></svg></span>Registrar proveedores</a>
           <a routerLink="/app/product-management" class="text-sm hover:text-blue-600 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73L11 22a2 2 0 0 0 2 0l8-4.27A2 2 0 0 0 21 16z"></path></svg></span>Productos</a>
           <a routerLink="/app/purchase-management" class="text-sm hover:text-blue-600 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><path d="M16 8h5v5"></path><circle cx="5.5" cy="18.5" r="1.5"></circle><circle cx="18.5" cy="18.5" r="1.5"></circle></svg></span>Compras</a>
           <a routerLink="/app/sales-clients" class="text-sm hover:text-blue-600 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path></svg></span>Ventas</a>
@@ -25,6 +27,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
         </nav>
 
         <div class="flex items-center space-x-3">
+          <span *ngIf="role" class="text-sm text-gray-600 mr-3">{{ role }}</span>
           <a routerLink="/login" class="text-sm text-gray-600">Cerrar sesión</a>
         </div>
       </div>
@@ -34,6 +37,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
       <aside class="w-64 bg-gray-50 border-r hidden md:block">
         <div class="p-4">
           <ul class="space-y-2">
+            <li><a routerLink="/app/providers-registration" class="block p-2 rounded hover:bg-gray-100 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"></path></svg></span>Registrar proveedores</a></li>
             <li><a routerLink="/app/product-management" class="block p-2 rounded hover:bg-gray-100 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M21 16V8a2 2 0 0 0-1-1.73L13 2a2 2 0 0 0-2 0L4 6.27A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73L11 22a2 2 0 0 0 2 0l8-4.27A2 2 0 0 0 21 16z"></path></svg></span>Gestión de productos</a></li>
             <li><a routerLink="/app/purchase-management" class="block p-2 rounded hover:bg-gray-100 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><rect x="1" y="3" width="15" height="13"></rect><path d="M16 8h5v5"></path><circle cx="5.5" cy="18.5" r="1.5"></circle><circle cx="18.5" cy="18.5" r="1.5"></circle></svg></span>Gestión de compras</a></li>
             <li><a routerLink="/app/sales-clients" class="block p-2 rounded hover:bg-gray-100 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path></svg></span>Ventas y clientes</a></li>
@@ -54,4 +58,18 @@ import { IconComponent } from '../../shared/icon/icon.component';
     `
   ]
 })
-export class NavbarComponent {}
+export class NavbarComponent implements OnInit {
+  role: string | null = null;
+
+  ngOnInit() {
+    try {
+      const raw = localStorage.getItem('meddisupply_auth');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        this.role = parsed?.role ?? null;
+      }
+    } catch (e) {
+      console.warn('Failed to read auth from localStorage', e);
+    }
+  }
+}

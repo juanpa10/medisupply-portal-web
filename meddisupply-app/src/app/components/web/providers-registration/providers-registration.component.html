@@ -1,0 +1,85 @@
+<div class="providers-page">
+  <div class="content">
+    <section class="card form-card">
+      <h3>Registro de proveedores</h3>
+      <p class="muted">Registra los proveedores; todos los campos quedan en auditoría.</p>
+
+      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="register()" class="grid">
+        <div class="col">
+          <label>Razón social *</label>
+          <input formControlName="razonSocial" placeholder="Ingrese nombre razón social..." [class.invalid]="isInvalid('razonSocial')" [attr.aria-invalid]="isInvalid('razonSocial')" />
+          <div class="error" *ngIf="isInvalid('razonSocial')">La razón social es obligatoria.</div>
+
+          <label>Representan Legal *</label>
+          <input formControlName="representanteLegal" placeholder="Ingrese nombre del representante legal ..." [class.invalid]="isInvalid('representanteLegal')" />
+          <div class="error" *ngIf="isInvalid('representanteLegal')">El representante legal es obligatorio.</div>
+
+          <label>Nombre contacto *</label>
+          <input formControlName="nombreContacto" placeholder="Ingrese nombre del contacto..." [class.invalid]="isInvalid('nombreContacto')" />
+          <div class="error" *ngIf="isInvalid('nombreContacto')">El nombre de contacto es obligatorio.</div>
+
+          <label>Certificado *</label>
+          <div class="file-row">
+            <input type="file" (change)="onFileChange($event)" />
+            <div class="file-name">{{ form.value.certificado }}</div>
+          </div>
+        </div>
+
+        <div class="col">
+          <label>NIT *</label>
+          <input formControlName="nit" placeholder="Ingrese NIT..." [class.invalid]="isInvalid('nit')" />
+          <div class="error" *ngIf="isInvalid('nit')">El NIT es obligatorio.</div>
+
+          <label>País *</label>
+          <input formControlName="pais" placeholder="Seleccione pais" [class.invalid]="isInvalid('pais')" />
+          <div class="error" *ngIf="isInvalid('pais')">El país es obligatorio.</div>
+
+          <label>Celular de contacto *</label>
+          <input formControlName="celular" placeholder="1234567890" [class.invalid]="isInvalid('celular')" />
+          <div class="error" *ngIf="isInvalid('celular')">El celular es obligatorio y solo debe contener números.</div>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" (click)="cancel()">Cancelar</button>
+            <button type="submit" class="btn primary" [disabled]="form.invalid">Registrar</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card table-card">
+      <h4>Proveedores</h4>
+      <p class="muted">Cada movimiento registra usuario, fecha/hora, tipo, cantidad, lote, motivo y evidencia.</p>
+
+      <div class="table-wrap">
+        <table class="providers-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Razón social</th>
+              <th>Nit</th>
+              <th>Representante legal</th>
+              <th>País</th>
+              <th>Nombre contacto</th>
+              <th>Celular de contacto</th>
+              <th>Certificado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let p of providers">
+              <td>{{ p.fecha }}</td>
+              <td>{{ p.razonSocial }}</td>
+              <td>{{ p.nit }}</td>
+              <td>{{ p.representanteLegal }}</td>
+              <td>{{ p.pais }}</td>
+              <td>{{ p.nombreContacto }}</td>
+              <td>{{ p.celular }}</td>
+              <td><button class="file-btn">{{ p.certificado || '—' }}</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
