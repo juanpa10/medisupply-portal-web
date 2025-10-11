@@ -22,9 +22,11 @@ import { catchError, finalize } from 'rxjs/operators';
 
         <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
           <div>
-            <label class="block text-sm font-medium text-gray-700">Usuario</label>
-            <input formControlName="user" type="text" class="mt-1 block w-full border rounded p-2" placeholder="admin" />
-            <div *ngIf="form.controls['user'].invalid && form.controls['user'].touched" class="text-red-600 text-sm">Por favor ingresa el usuario</div>
+            <label class="block text-sm font-medium text-gray-700">Correo</label>
+            <input formControlName="email" type="email" class="mt-1 block w-full border rounded p-2" placeholder="nombre@ejemplo.com" />
+            <div *ngIf="form.controls['email'].invalid && form.controls['email'].touched" class="text-red-600 text-sm">
+              Por favor ingresa un correo electrónico válido
+            </div>
           </div>
 
           <div>
@@ -59,7 +61,7 @@ export class LoginWebComponent {
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
-      user: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
   }
@@ -68,8 +70,8 @@ export class LoginWebComponent {
     if (this.form.valid) {
       this.loading = true;
       this.error = null;
-      const { user, password } = this.form.value;
-      this.auth.login(user, password).pipe(
+      const { email, password } = this.form.value;
+      this.auth.login(email, password).pipe(
         finalize(() => this.loading = false),
         catchError((err) => {
           const msg = (err && err.error && err.error.message) ? err.error.message : 'Credenciales inválidas';

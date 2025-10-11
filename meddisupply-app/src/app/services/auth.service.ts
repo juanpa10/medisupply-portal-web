@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface LoginPayload {
-  user: string;
+  email: string;
   password: string;
 }
 
@@ -14,9 +14,9 @@ export class AuthService {
   private http = inject(HttpClient);
   private baseUrl = inject(API_BASE_URL);
 
-  login(user: string, password: string): Observable<any> {
+  login(email: string, password: string): Observable<any> {
     const url = `${this.baseUrl.replace(/\/+$/,'')}/auth/login`;
-    const body: LoginPayload = { user, password };
+    const body: LoginPayload = { email, password };
     return this.http.post(url, body, { headers: { 'Content-Type': 'application/json' } });
   }
 }
