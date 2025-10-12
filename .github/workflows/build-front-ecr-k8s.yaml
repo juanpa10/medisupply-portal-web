@@ -1,0 +1,66 @@
+name: Build & Push to ECR (Kubernetes-Web)
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: ${{ vars.AWS_REGION }}           # ej: us-east-1
+  ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY }}   # ej: medisupply
+
+jobs:
+  build_push:
+    name: Build & Push web image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # (Tu Dockerfile en la raíz del front: Node->Nginx)
+      - name: Configure AWS (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Docker metadata (web)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}
+          tags: |
+            type=sha,prefix=k8s-web-
+            type=raw,value=k8s-web-latest,enable=true
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push (web)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64
+          provenance: false
+          sbom: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # ▶️ Dispara deploy en el repo del BACK (orquestador)
+      - name: Trigger deploy in backend repo
+        if: ${{ success() }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token ${{ secrets.INFRA_REPO_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/juanpa10/medisupply-backend-micros/dispatches \
+            -d '{"event_type":"deploy-from-front","client_payload":{"web_sha":"'"${GITHUB_SHA}"'"}}'
