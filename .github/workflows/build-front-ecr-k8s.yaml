@@ -57,10 +57,9 @@ jobs:
 
       # ▶️ Dispara deploy en el repo del BACK (orquestador)
       - name: Trigger deploy in backend repo
-        if: ${{ success() }}
-        run: |
-          curl -X POST \
-            -H "Authorization: token ${{ secrets.INFRA_REPO_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/juanpa10/medisupply-backend-micros/dispatches \
-            -d '{"event_type":"deploy-from-front","client_payload":{"web_sha":"'"${GITHUB_SHA}"'"}}'
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.INFRA_REPO_TOKEN }}   # PAT con acceso al repo del back
+          repository: juanpa10/medisupply-backend-micros  
+          event-type: deploy-from-front
+          client-payload: '{"web_sha":"${{ github.sha }}"}'
