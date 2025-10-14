@@ -1,7 +1,8 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, ValueProvider, InjectionToken } from '@angular/core';
 import { provideRouter, Routes } from '@angular/router';
 import { importProvidersFrom } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { API_BASE_URL } from './services/auth.service';
 import { LoginWebComponent } from './components/auth/login-web/login-web.component';
 import { NavbarComponent } from './components/navigation/navbar/navbar.component';
@@ -43,7 +44,7 @@ export const appConfig: ApplicationConfig = {
 // the global `window['APP_API_BASE']` before the app boots to change this.
 export const apiBaseProvider: ValueProvider = {
   provide: API_BASE_URL,
-  useValue: (typeof window !== 'undefined' && (window as any).APP_API_BASE) ? (window as any).APP_API_BASE : 'http://localhost:9001'
+  useValue: (typeof window !== 'undefined' && (window as any).APP_API_BASE) ? (window as any).APP_API_BASE : ''
 };
 
 // Note: to use the `AuthService` we need HttpClient available; importing providers
@@ -52,3 +53,6 @@ export const appProviders = [
   importProvidersFrom(HttpClientModule),
   apiBaseProvider
 ];
+
+// Register global HTTP interceptors (auth)
+appProviders.push({ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true } as any);

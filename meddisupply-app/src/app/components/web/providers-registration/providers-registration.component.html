@@ -2,9 +2,11 @@
   <div class="content">
     <section class="card form-card">
       <h3>Registro de proveedores</h3>
-      <p class="muted">Registra los proveedores; todos los campos quedan en auditoría.</p>
+      <p class="muted">Registra los proveedores: todos los campos quedan en auditoría.</p>
 
-      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+  <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+  <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+  <div *ngIf="loading" class="muted">Procesando... por favor espere.</div>
 
       <form [formGroup]="form" (ngSubmit)="register()" class="grid">
         <div class="col">
@@ -42,7 +44,7 @@
 
           <div class="actions">
             <button type="button" class="btn ghost" (click)="cancel()">Cancelar</button>
-            <button type="submit" class="btn primary" [disabled]="form.invalid">Registrar</button>
+            <button type="submit" class="btn primary" [disabled]="form.invalid || loading">Registrar</button>
           </div>
         </div>
       </form>
@@ -53,7 +55,12 @@
       <p class="muted">Cada movimiento registra usuario, fecha/hora, tipo, cantidad, lote, motivo y evidencia.</p>
 
       <div class="table-wrap">
-        <table class="providers-table">
+        <div *ngIf="loadingSuppliers" class="muted">Cargando proveedores...</div>
+        <div *ngIf="supplierLoadError" class="alert error">
+          {{ supplierLoadError }}
+          <button class="btn ghost" (click)="loadSuppliers()">Reintentar</button>
+        </div>
+        <table *ngIf="!loadingSuppliers && !supplierLoadError" class="providers-table">
           <thead>
             <tr>
               <th>Fecha</th>
