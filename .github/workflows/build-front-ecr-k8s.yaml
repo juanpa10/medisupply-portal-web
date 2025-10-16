@@ -45,7 +45,7 @@ jobs:
       - name: Build & Push (web)
         uses: docker/build-push-action@v6
         with:
-          context: ./meddisupply-app
+          context: .
           file: ./meddisupply-app/Dockerfile
           push: true
           platforms: linux/amd64
