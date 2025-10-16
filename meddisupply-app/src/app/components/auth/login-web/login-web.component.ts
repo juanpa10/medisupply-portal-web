@@ -16,7 +16,7 @@ import { catchError, finalize } from 'rxjs/operators';
       <div class="w-full max-w-md bg-white rounded-lg shadow p-8">
         <div class="text-center mb-4">
           <img src="/assets/logo-login.png" alt="Logo" class="h-10 mx-auto" />
-          <h2 class="mt-3 text-2xl font-semibold">Bienvenido!</h2>
+          <h2 class="mt-3 text-2xl font-semibold">¡Bienvenido!</h2>
           <p class="text-sm text-gray-500">Inicia sesión para continuar en MediSupply</p>
         </div>
         <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
