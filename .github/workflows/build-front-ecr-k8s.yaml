@@ -56,7 +56,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      # ▶️ Dispara deploy en el repo del BACK (orquestador) 
+      # Dispara deploy en el repo del BACK (orquestador) 
       - name: Trigger deploy in backend repo
         uses: peter-evans/repository-dispatch@v3
         with:

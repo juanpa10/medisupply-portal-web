@@ -207,6 +207,7 @@ export class ProvidersRegistrationComponent implements OnInit {
   loadSuppliers() {
     this.loadingSuppliers = true;
     this.supplierLoadError = null;
+    console.log('getSuppliers q');
     this.suppliers.getSuppliers().pipe(
       catchError(err => {
         this.supplierLoadError = 'No se pudo cargar la lista de proveedores.';

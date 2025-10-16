@@ -21,13 +21,16 @@ export interface SupplierListResponse {
 export class SuppliersService {
   private http = inject(HttpClient);
   private baseUrl = inject(API_BASE_URL);
-
+  //private baseUrl = 'http://52.55.197.150';
   getSuppliers(filters?: { country?: string; business_name?: string }): Observable<SupplierListResponse> {
-  const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+     console.log('getSuppliers');
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
   const url = cleaned ? `${cleaned}/crm/api/v1/suppliers` : `/crm/api/v1/suppliers`;
+  //const url = 'http://52.55.197.150/crm/api/v1/suppliers';
     let params = new HttpParams();
     if (filters?.country) params = params.set('country', filters.country);
     if (filters?.business_name) params = params.set('business_name', filters.business_name);
+    console.log('url', url);
     return this.http.get<SupplierListResponse>(url, { params });
   }
 

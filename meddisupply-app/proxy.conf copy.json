@@ -1,0 +1,32 @@
+{
+  "/api/v1/managers": {
+    "target": "http://localhost:9005",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/v1/clients": {
+    "target": "http://localhost:9005",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/v1/suppliers": {
+    "target": "http://localhost:9004",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:9004",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/auth": {
+    "target": "http://localhost:9001",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
