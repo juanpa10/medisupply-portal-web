@@ -19,7 +19,6 @@ import { catchError, finalize } from 'rxjs/operators';
           <h2 class="mt-3 text-2xl font-semibold">Bienvenido</h2>
           <p class="text-sm text-gray-500">Inicia sesión para continuar en MediSupply</p>
         </div>
-
         <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-5">
           <div>
             <label class="block text-sm font-medium text-gray-700">Correo</label>
@@ -47,6 +46,9 @@ import { catchError, finalize } from 'rxjs/operators';
 
           <div>
             <app-button type="submit" [label]="loading ? 'Iniciando...' : 'Iniciar sesión'" [loading]="loading" [variant]="'primary'" [disabled]="form.invalid"></app-button>
+          </div>
+          <div class="text-center mt-4">
+            <a routerLink="/users-registration" class="text-sm text-blue-600">¿Registrar nuevo usuario?</a>
           </div>
         </form>
       </div>
@@ -87,6 +89,7 @@ export class LoginWebComponent {
                 access_token: res.access_token,
                 expires_in: res.expires_in ?? null,
                 role: res.role ?? null,
+                email: res.email ?? email,
                 token_type: res.token_type ?? null,
                 received_at: Date.now()
               };

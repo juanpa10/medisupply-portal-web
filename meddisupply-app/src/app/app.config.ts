@@ -12,16 +12,20 @@ import { SalesClientsComponent } from './components/web/sales-clients/sales-clie
 import { LogisticsInventoryComponent } from './components/web/logistics-inventory/logistics-inventory.component';
 import { SecurityAuditComponent } from './components/web/security-audit/security-audit.component';
 import { ProvidersRegistrationComponent } from './components/web/providers-registration/providers-registration.component';
+import { SellersRegistrationComponent } from './components/web/sellers-registration/sellers-registration.component';
+import { UsersRegistrationComponent } from './components/web/users-registration/users-registration.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: 'login', component: LoginWebComponent },
+  { path: 'users-registration', component: UsersRegistrationComponent },
   {
     path: 'app',
     component: NavbarComponent,
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'product-management' },
   { path: 'providers-registration', component: ProvidersRegistrationComponent },
+    { path: 'sellers-registration', component: SellersRegistrationComponent },
       { path: 'product-management', component: ProductManagementComponent },
       { path: 'purchase-management', component: PurchaseManagementComponent },
       { path: 'sales-clients', component: SalesClientsComponent },

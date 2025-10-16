@@ -1,0 +1,37 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { API_BASE_URL } from './auth.service';
+
+export interface UserCreateResponse {
+  status: string;
+  code: number;
+  message: string;
+  data: any;
+}
+
+export interface UserListResponse {
+  status: string;
+  code: number;
+  message: string;
+  data: Array<any>;
+}
+
+@Injectable({ providedIn: 'root' })
+export class UsersService {
+  private http = inject(HttpClient);
+  private baseUrl = inject(API_BASE_URL);
+
+  getUsers(filters?: { role?: string }): Observable<UserListResponse> {
+    const url = `${this.baseUrl.replace(/\/+$/, '')}/api/v1/users`;
+    let params = new HttpParams();
+    if (filters?.role) params = params.set('role', filters.role);
+    return this.http.get<UserListResponse>(url, { params });
+  }
+
+  createUser(payload: any): Observable<UserCreateResponse> {
+    // Use the auth proxy path to avoid CORS; dev server proxy forwards /auth to the auth host
+    const url = `/auth/users`;
+    return this.http.post<UserCreateResponse>(url, payload);
+  }
+}

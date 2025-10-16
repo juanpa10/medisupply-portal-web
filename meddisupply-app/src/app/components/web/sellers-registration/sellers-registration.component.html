@@ -1,0 +1,52 @@
+<div class="sellers-page">
+  <div class="content">
+    <section class="card form-card">
+  <h3>Registrar clientes</h3>
+  <p class="muted">Registra clientes (Razón social y NIT). Los movimientos quedan en auditoría.</p>
+
+      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="register()" class="grid">
+        <div class="col">
+          <label>Razón social *</label>
+          <input formControlName="name" placeholder="Razón social (cliente)..." [class.invalid]="isInvalid('name')" />
+          <div class="error" *ngIf="isInvalid('name')">La razón social es obligatoria.</div>
+
+          <label>NIT *</label>
+          <input formControlName="identifier" placeholder="NIT o identificador fiscal..." [class.invalid]="isInvalid('identifier')" />
+          <div class="error" *ngIf="isInvalid('identifier')">El NIT es obligatorio.</div>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" (click)="form.reset()">Cancelar</button>
+            <button type="submit" class="btn primary" [disabled]="form.invalid || loading">Registrar</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="card table-card">
+      <h4>Clientes</h4>
+      <p class="muted">Lista de clientes asociados al vendedor autenticado.</p>
+
+      <div class="table-wrap">
+        <table class="sellers-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>NIT</th>
+              <th>Razón social</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let c of clients">
+              <td>{{ c.created_at ? (c.created_at | date:'dd/MM/yyyy') : '—' }}</td>
+              <td>{{ c.identifier }}</td>
+              <td>{{ c.name }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<div class="users-page">
+  <div class="content">
+    <section class="card form-card">
+      <h3>Registro de usuarios</h3>
+      <p class="muted">Registra usuarios del sistema (Vendedor o Cliente).</p>
+
+      <div *ngIf="successMessage" class="alert success">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="alert error">{{ errorMessage }}</div>
+
+      <form [formGroup]="form" (ngSubmit)="register()" class="grid">
+        <div class="col">
+          <label>Nombre completo *</label>
+          <input formControlName="fullName" placeholder="Ingrese nombre completo..." [class.invalid]="isInvalid('fullName')" />
+          <div class="error" *ngIf="isInvalid('fullName')">El nombre es obligatorio.</div>
+
+          <label>Correo electrónico *</label>
+          <input formControlName="email" placeholder="Ingrese correo..." [class.invalid]="isInvalid('email')" />
+          <div class="error" *ngIf="isInvalid('email')">El correo es obligatorio y debe ser válido.</div>
+
+          <label>Teléfono de contacto *</label>
+          <input formControlName="phone" placeholder="Ingrese teléfono..." [class.invalid]="isInvalid('phone')" />
+          <div class="error" *ngIf="isInvalid('phone')">El teléfono es obligatorio y solo debe contener números.</div>
+        </div>
+
+        <div class="col">
+          <label>Número de identificación *</label>
+          <input formControlName="idNumber" placeholder="Ingrese número de identificación..." [class.invalid]="isInvalid('idNumber')" />
+          <div class="error" *ngIf="isInvalid('idNumber')">La identificación es obligatoria.</div>
+
+          <label>Rol *</label>
+          <select formControlName="role">
+            <option value="Vendedor">Vendedor</option>
+            <option value="Cliente">Cliente</option>
+          </select>
+
+          <label>Contraseña *</label>
+          <input type="password" formControlName="password" placeholder="Ingrese contraseña..." [class.invalid]="isInvalid('password')" />
+          <div class="error" *ngIf="isInvalid('password')">La contraseña es obligatoria.</div>
+
+          <label>Confirmar contraseña *</label>
+          <input type="password" formControlName="confirmPassword" placeholder="Confirma la contraseña..." [class.invalid]="isInvalid('confirmPassword') || passwordsDoNotMatch()" />
+          <div class="error" *ngIf="isInvalid('confirmPassword')">La confirmación de contraseña es obligatoria.</div>
+          <div class="error" *ngIf="passwordsDoNotMatch()">Las contraseñas no coinciden.</div>
+
+          <div class="actions">
+            <button type="button" class="btn ghost" (click)="form.reset({ role: 'Vendedor' })">Cancelar</button>
+            <a routerLink="/login" class="btn ghost">Volver al login</a>
+            <button type="submit" class="btn primary" [disabled]="form.invalid">Registrar</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- users list removed: form-only page as requested -->
+  </div>
+</div>
