@@ -11,6 +11,7 @@ import { PurchaseManagementComponent } from './components/web/purchase-managemen
 import { SalesClientsComponent } from './components/web/sales-clients/sales-clients.component';
 import { LogisticsInventoryComponent } from './components/web/logistics-inventory/logistics-inventory.component';
 import { SecurityAuditComponent } from './components/web/security-audit/security-audit.component';
+import { SecurityUsersComponent } from './components/web/security-users/security-users.component';
 import { ProvidersRegistrationComponent } from './components/web/providers-registration/providers-registration.component';
 import { SellersRegistrationComponent } from './components/web/sellers-registration/sellers-registration.component';
 import { UsersRegistrationComponent } from './components/web/users-registration/users-registration.component';
@@ -30,7 +31,8 @@ const routes: Routes = [
       { path: 'purchase-management', component: PurchaseManagementComponent },
       { path: 'sales-clients', component: SalesClientsComponent },
       { path: 'logistics-inventory', component: LogisticsInventoryComponent },
-      { path: 'security-audit', component: SecurityAuditComponent }
+  { path: 'security-audit', component: SecurityUsersComponent },
+      { path: 'security-users', component: SecurityUsersComponent }
     ]
   },
   { path: '**', redirectTo: 'login' }

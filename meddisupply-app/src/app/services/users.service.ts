@@ -25,10 +25,17 @@ export class UsersService {
   getUsers(filters?: { role?: string }): Observable<UserListResponse> {
     // Prefer proxy-friendly relative path when API_BASE_URL is not set.
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/api/v1/users` : `/api/v1/users`;
+    const url = cleaned ? `${cleaned}/roles/api/v1/users` : `/roles/api/v1/users`;
     let params = new HttpParams();
     if (filters?.role) params = params.set('role', filters.role);
     return this.http.get<UserListResponse>(url, { params });
+  }
+
+  // Some backends expose a users-with-roles endpoint (no v1); provide a helper for that path
+  getUsersWithRoles(): Observable<any> {
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/roles/api/users-with-roles` : `/roles/api/users-with-roles`;
+    return this.http.get<any>(url);
   }
 
   createUser(payload: any): Observable<UserCreateResponse> {

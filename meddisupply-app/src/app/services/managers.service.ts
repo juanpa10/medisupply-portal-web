@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from './auth.service';
 
@@ -16,19 +16,23 @@ export class ManagersService {
   private baseUrl = inject(API_BASE_URL);
 
   createManager(payload: any): Observable<ManagerCreateResponse> {
-    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+  const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
     // In production managers API lives under /managers
     const url = cleaned ? `${cleaned}/managers/api/v1/managers` : `/managers/api/v1/managers`;
     return this.http.post<ManagerCreateResponse>(url, payload);
   }
 
   // Fetch manager details (including clients) by manager email
-  getManagerByEmail(email: string): Observable<any> {
+
+getManagerByEmail(email: string): Observable<any> {
     const encoded = encodeURIComponent(email || '');
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/managers/api/v1/managers/by-email/${encoded}` : `/managers/api/v1/managers/by-email/${encoded}`;
+    const url = cleaned ? `${cleaned}/managers/api/v1/managers/by-email/${email}` : `/managers/api/v1/managers/by-email/${email}`;
     return this.http.get<any>(url);
   }
+    //const params = new HttpParams().set('email', email || '');
+    //return this.http.get<any>(url, { params });
+  
 
   // Assign a client to a manager
   assignClient(managerId: number | string, payload: any): Observable<any> {

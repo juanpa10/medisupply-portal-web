@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { ButtonComponent } from '../../shared/button/button.component';
 import { AuthService } from '../../../services/auth.service';
+import { UsersService } from '../../../services/users.service';
 import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 
@@ -60,6 +61,7 @@ export class LoginWebComponent {
   loading = false;
   error: string | null = null;
   private auth = inject(AuthService);
+  private usersSvc = inject(UsersService);
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.form = this.fb.group({
@@ -100,7 +102,26 @@ export class LoginWebComponent {
             console.warn('Failed to save auth token', e);
           }
 
-          this.router.navigate(['/app/product-management']);
+          // Fetch the full users-with-roles list and persist only the object for the logged-in user
+          try {
+            this.usersSvc.getUsersWithRoles().pipe(
+              catchError(err => { console.warn('Failed to fetch users-with-roles', err); return of(null); })
+            ).subscribe((list: any) => {
+              const arr = Array.isArray(list) ? list : (list && list.data) ? list.data : [];
+              const loggedEmail = (res.email ?? email ?? '').toString().toLowerCase();
+              if (Array.isArray(arr)) {
+                const found = arr.find((u: any) => (u.email || '').toString().toLowerCase() === loggedEmail) || null;
+                if (found) {
+                  try { localStorage.setItem('meddisupply_user_roles', JSON.stringify(found)); } catch (e) { console.warn('Failed to save user roles', e); }
+                }
+              }
+              // Navigate regardless of success/failure of roles fetch
+              this.router.navigate(['/app/product-management']);
+            });
+          } catch (e) {
+            console.warn('Failed to call users-with-roles', e);
+            this.router.navigate(['/app/product-management']);
+          }
         }
       });
     } else {

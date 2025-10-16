@@ -5,7 +5,7 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
-  "/managers/gitapi/v1/clients": {
+  "/managers/api/v1/clients": {
     "target": "http://52.55.197.150",
     "secure": false,
     "changeOrigin": true,
@@ -30,6 +30,18 @@
     "logLevel": "debug"
   },
   "/api": {
+    "target": "http://52.55.197.150",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/roles/api/users-with-roles": {
+    "target": "http://52.55.197.150",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/roles/api/users": {
     "target": "http://52.55.197.150",
     "secure": false,
     "changeOrigin": true,

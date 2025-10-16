@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { UsersService } from '../../../services/users.service';
 import { ManagersService } from '../../../services/managers.service';
+import { RolesService } from '../../../services/roles.service';
 import { RouterModule, Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -29,7 +30,7 @@ export class UsersRegistrationComponent implements OnInit {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private fb: FormBuilder, private usersSvc: UsersService, private managersSvc: ManagersService, private router: Router) {
+  constructor(private fb: FormBuilder, private usersSvc: UsersService, private managersSvc: ManagersService, private rolesSvc: RolesService, private router: Router) {
     this.form = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -96,6 +97,19 @@ export class UsersRegistrationComponent implements OnInit {
       const created = res.data ?? null;
 
       // If role is Vendedor, synchronously create manager record before redirecting
+      // After user creation, also call roles service to create roles record in roles API
+      const rolePayload = {
+        names: payload.names,
+        email: payload.email,
+        password: payload.password
+      };
+
+      this.rolesSvc.createRoleUser(rolePayload).pipe(
+        catchError(err => { console.warn('roles create failed', err); return of(null); })
+      ).subscribe(() => {
+        // no-op; we continue flow below (manager creation or redirect)
+      });
+
       if (payload.role === 'Vendedor') {
         const managerPayload = {
           full_name: payload.names,

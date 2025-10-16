@@ -53,7 +53,7 @@ export class SellersRegistrationComponent implements OnInit {
       const role = (parsedAuth?.role ?? '').toString().toLowerCase();
       const email = parsedAuth?.email ?? null;
       console.debug('sellers-registration: resolved auth -> role=', role, ' email=', email);
-      if (role === 'vendedor' && email) {
+      if ( email) {
         this.isVendorView = true;
         this.managerEmail = email;
         // fetch manager by email and populate clients list
@@ -78,6 +78,7 @@ export class SellersRegistrationComponent implements OnInit {
       console.warn('Failed to read auth from localStorage', e);
       this.loadClients();
     }
+    this.isVendorView = true;
   }
 
   // Helper: try to parse localStorage value and extract { email, role, token }
