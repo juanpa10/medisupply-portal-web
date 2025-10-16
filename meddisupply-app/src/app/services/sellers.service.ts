@@ -23,7 +23,8 @@ export class SellersService {
   private baseUrl = inject(API_BASE_URL);
 
   getSellers(filters?: { country?: string; name?: string }): Observable<SellerListResponse> {
-    const url = `${this.baseUrl.replace(/\/+$/,'')}/api/sellers`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/,'');
+    const url = cleaned ? `${cleaned}/api/sellers` : `/api/sellers`;
     let params = new HttpParams();
     if (filters?.country) params = params.set('country', filters.country);
     if (filters?.name) params = params.set('name', filters.name);
@@ -31,7 +32,8 @@ export class SellersService {
   }
 
   createSeller(formData: FormData): Observable<SellerCreateResponse> {
-    const url = `${this.baseUrl.replace(/\/+$/,'')}/api/v1/sellers`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/,'');
+    const url = cleaned ? `${cleaned}/api/v1/sellers` : `/api/v1/sellers`;
     return this.http.post<SellerCreateResponse>(url, formData);
   }
 }

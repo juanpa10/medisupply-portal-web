@@ -23,7 +23,8 @@ export class SuppliersService {
   private baseUrl = inject(API_BASE_URL);
 
   getSuppliers(filters?: { country?: string; business_name?: string }): Observable<SupplierListResponse> {
-    const url = `${this.baseUrl.replace(/\/+$/,'')}/api/v1/suppliers`;
+  const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+  const url = cleaned ? `${cleaned}/crm/api/v1/suppliers` : `/crm/api/v1/suppliers`;
     let params = new HttpParams();
     if (filters?.country) params = params.set('country', filters.country);
     if (filters?.business_name) params = params.set('business_name', filters.business_name);
@@ -31,7 +32,8 @@ export class SuppliersService {
   }
 
   createSupplier(formData: FormData): Observable<SupplierCreateResponse> {
-    const url = `${this.baseUrl.replace(/\/+$/,'')}/api/v1/suppliers`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/crm/api/v1/suppliers` : `/crm/api/v1/suppliers`;
     return this.http.post<SupplierCreateResponse>(url, formData);
   }
 }

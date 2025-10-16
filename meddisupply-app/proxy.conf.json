@@ -11,6 +11,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/v1/suppliers": {
+    "target": "http://localhost:9004",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api": {
     "target": "http://localhost:9004",
     "secure": false,

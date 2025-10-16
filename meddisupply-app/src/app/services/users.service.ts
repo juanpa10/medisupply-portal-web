@@ -23,7 +23,9 @@ export class UsersService {
   private baseUrl = inject(API_BASE_URL);
 
   getUsers(filters?: { role?: string }): Observable<UserListResponse> {
-    const url = `${this.baseUrl.replace(/\/+$/, '')}/api/v1/users`;
+    // Prefer proxy-friendly relative path when API_BASE_URL is not set.
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/api/v1/users` : `/api/v1/users`;
     let params = new HttpParams();
     if (filters?.role) params = params.set('role', filters.role);
     return this.http.get<UserListResponse>(url, { params });

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { API_BASE_URL } from './auth.service';
 
 export interface ManagerCreateResponse {
   status?: string;
@@ -12,23 +13,27 @@ export interface ManagerCreateResponse {
 @Injectable({ providedIn: 'root' })
 export class ManagersService {
   private http = inject(HttpClient);
+  private baseUrl = inject(API_BASE_URL);
 
   createManager(payload: any): Observable<ManagerCreateResponse> {
-    // Use proxy path to reach http://localhost:9005
-    const url = `managers/api/v1/managers`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    // In production managers API lives under /managers
+    const url = cleaned ? `${cleaned}/managers/api/v1/managers` : `/managers/api/v1/managers`;
     return this.http.post<ManagerCreateResponse>(url, payload);
   }
 
   // Fetch manager details (including clients) by manager email
   getManagerByEmail(email: string): Observable<any> {
     const encoded = encodeURIComponent(email || '');
-    const url = `managers/api/v1/managers/by-email/${encoded}`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/managers/api/v1/managers/by-email/${encoded}` : `/managers/api/v1/managers/by-email/${encoded}`;
     return this.http.get<any>(url);
   }
 
   // Assign a client to a manager
   assignClient(managerId: number | string, payload: any): Observable<any> {
-    const url = `managers/api/v1/managers/${managerId}/assign`;
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/managers/api/v1/managers/${managerId}/assign` : `/managers/api/v1/managers/${managerId}/assign`;
     return this.http.post<any>(url, payload);
   }
 }
