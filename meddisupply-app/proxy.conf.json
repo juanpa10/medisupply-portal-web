@@ -1,18 +1,18 @@
 {
   "/api/v1/managers": {
-    "target": "http://localhost:9005/mng",
+    "target": "http://localhost:9005",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/v1/clients": {
-    "target": "http://localhost:9005/mng",
+    "target": "http://localhost:9005",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api": {
-    "target": "http://localhost:9004/crm",
+    "target": "http://localhost:9004",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
