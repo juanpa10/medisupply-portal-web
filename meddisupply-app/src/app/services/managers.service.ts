@@ -15,20 +15,20 @@ export class ManagersService {
 
   createManager(payload: any): Observable<ManagerCreateResponse> {
     // Use proxy path to reach http://localhost:9005
-    const url = `/api/v1/managers`;
+    const url = `managers/api/v1/managers`;
     return this.http.post<ManagerCreateResponse>(url, payload);
   }
 
   // Fetch manager details (including clients) by manager email
   getManagerByEmail(email: string): Observable<any> {
     const encoded = encodeURIComponent(email || '');
-    const url = `/api/v1/managers/by-email/${encoded}`;
+    const url = `managers/api/v1/managers/by-email/${encoded}`;
     return this.http.get<any>(url);
   }
 
   // Assign a client to a manager
   assignClient(managerId: number | string, payload: any): Observable<any> {
-    const url = `/api/v1/managers/${managerId}/assign`;
+    const url = `managers/api/v1/managers/${managerId}/assign`;
     return this.http.post<any>(url, payload);
   }
 }
