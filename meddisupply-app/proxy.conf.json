@@ -5,7 +5,7 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
-  "/managers/api/v1/clients": {
+  "/managers/gitapi/v1/clients": {
     "target": "http://52.55.197.150",
     "secure": false,
     "changeOrigin": true,
