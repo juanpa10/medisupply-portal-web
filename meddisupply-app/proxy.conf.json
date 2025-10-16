@@ -40,5 +40,11 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+  "/auth/login": {
+    "target": "http://52.55.197.150",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
