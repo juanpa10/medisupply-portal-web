@@ -36,7 +36,7 @@ jobs:
         with:
           images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}
           tags: |
-            type=sha,prefix=k8s-web-
+            type=sha,prefix=k8s-web-${{ github.sha }}
             type=raw,value=k8s-web-latest,enable=true
 
       - name: Set up Buildx
