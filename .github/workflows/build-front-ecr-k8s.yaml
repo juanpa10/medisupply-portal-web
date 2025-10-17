@@ -35,8 +35,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${{ env.ECR_REPOSITORY }}
-          tags: |
-            type=sha,prefix=k8s-web-${{ github.sha }}
+          tags: |            
+            type=sha,prefix=k8s-web-,format=long
             type=raw,value=k8s-web-latest,enable=true
 
       - name: Set up Buildx
@@ -60,7 +60,10 @@ jobs:
       - name: Trigger deploy in backend repo
         uses: peter-evans/repository-dispatch@v3
         with:
-          token: ${{ secrets.INFRA_REPO_TOKEN }}   # PAT con acceso al repo del back
-          repository: juanpa10/medisupply-backend-micros  
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          repository: juanpa10/medisupply-backend-micros
           event-type: deploy-from-front
-          client-payload: '{"web_sha":"${{ github.sha }}"}'
+          # Envía tanto el tag completo como el sha por compatibilidad
+          client-payload: >-
+            {"web_tag":"k8s-web-${{ github.sha }}","web_sha":"${{ github.sha }}"}
+
