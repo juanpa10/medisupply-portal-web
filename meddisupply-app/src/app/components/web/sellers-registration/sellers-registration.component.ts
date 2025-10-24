@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { SellersService } from '../../../services/sellers.service';
 import { ManagersService } from '../../../services/managers.service';
@@ -17,7 +18,7 @@ interface ClientEntry {
 @Component({
   selector: 'app-sellers-registration',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './sellers-registration.component.html',
   styleUrls: ['./sellers-registration.component.scss']
 })
@@ -30,6 +31,7 @@ export class SellersRegistrationComponent implements OnInit {
   isVendorView = false;
   managerEmail: string | null = null;
   managerId: number | null = null;
+  canAssignManagers = false;
   
 
   constructor(private fb: FormBuilder, private sellersSvc: SellersService, private managersSvc: ManagersService, private clientsSvc: ClientsService) {
@@ -50,7 +52,9 @@ export class SellersRegistrationComponent implements OnInit {
       const raw = localStorage.getItem('meddisupply_auth');
       // Try to parse several shapes: JSON with email/role, or object with token, or JWT string
       const parsedAuth = this.parseAuthRaw(raw);
-      const role = (parsedAuth?.role ?? '').toString().toLowerCase();
+  const role = (parsedAuth?.role ?? '').toString().toLowerCase();
+  // determine permission to see assign manager UI
+  this.canAssignManagers = (role === 'admin' || role === 'security_admin');
       const email = parsedAuth?.email ?? null;
       console.debug('sellers-registration: resolved auth -> role=', role, ' email=', email);
       if ( email) {

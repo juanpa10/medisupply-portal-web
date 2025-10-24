@@ -18,7 +18,7 @@ export class ManagersService {
   createManager(payload: any): Observable<ManagerCreateResponse> {
   const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
     // In production managers API lives under /managers
-    const url = cleaned ? `${cleaned}/managers/api/v1/managers` : `/managers/api/v1/managers`;
+    const url = cleaned ? `${cleaned}/api/v1/managers` : `/api/v1/managers`;
     return this.http.post<ManagerCreateResponse>(url, payload);
   }
 
@@ -27,7 +27,7 @@ export class ManagersService {
 getManagerByEmail(email: string): Observable<any> {
     const encoded = encodeURIComponent(email || '');
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/managers/api/v1/managers/by-email/${email}` : `/managers/api/v1/managers/by-email/${email}`;
+    const url = cleaned ? `${cleaned}/api/v1/managers/by-email/${email}` : `/api/v1/managers/by-email/${email}`;
     return this.http.get<any>(url);
   }
     //const params = new HttpParams().set('email', email || '');
@@ -37,7 +37,21 @@ getManagerByEmail(email: string): Observable<any> {
   // Assign a client to a manager
   assignClient(managerId: number | string, payload: any): Observable<any> {
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/managers/api/v1/managers/${managerId}/assign` : `/managers/api/v1/managers/${managerId}/assign`;
+    const url = cleaned ? `${cleaned}/api/v1/managers/${managerId}/assign` : `/api/v1/managers/${managerId}/assign`;
     return this.http.post<any>(url, payload);
+  }
+
+  // Fetch list of managers
+  getManagers(): Observable<any> {
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/api/v1/managers` : `/api/v1/managers`;
+    return this.http.get<any>(url);
+  }
+
+  // Fetch manager by id
+  getManagerById(id: number | string): Observable<any> {
+    const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
+    const url = cleaned ? `${cleaned}/api/v1/managers/${id}` : `/api/v1/managers/${id}`;
+    return this.http.get<any>(url);
   }
 }

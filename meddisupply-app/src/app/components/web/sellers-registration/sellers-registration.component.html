@@ -19,14 +19,26 @@
 
           <div class="actions">
             <button type="button" class="btn ghost" (click)="form.reset()">Cancelar</button>
-            <button type="submit" class="btn primary" [disabled]="form.invalid || loading">Registrar</button>
+            <button type="submit" class="inline-block bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" [disabled]="form.invalid || loading">Registrar</button>
           </div>
         </div>
       </form>
     </section>
 
     <section class="card table-card">
-      <h4>Clientes</h4>
+      <div class="flex items-center justify-between">
+        <h4>Clientes</h4>
+        <div class="flex items-center gap-2">
+          <a *ngIf="canAssignManagers" routerLink="/app/assign-manager" class="inline-block bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Asignar gerente</a>
+          <span *ngIf="!canAssignManagers" class="text-sm text-gray-500" title="Solo los usuarios con rol 'admin' o 'security_admin' pueden asignar gerentes"> 
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 8v4"></path>
+              <circle cx="12" cy="17" r="1"></circle>
+            </svg>
+          </span>
+        </div>
+      </div>
       <p class="muted">Lista de clientes asociados al vendedor autenticado.</p>
 
       <div class="table-wrap">

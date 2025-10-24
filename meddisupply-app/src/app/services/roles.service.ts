@@ -17,13 +17,13 @@ export class RolesService {
 
   createRoleUser(payload: { names: string; email: string; password: string }): Observable<RoleUserCreateResponse> {
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/roles/api/users` : `/roles/api/users`;
+    const url = cleaned ? `${cleaned}/api/users` : `/api/users`;
     return this.http.post<RoleUserCreateResponse>(url, payload, { headers: { 'Content-Type': 'application/json' } });
   }
 
   assignRolesToUser(userId: number, assignments: Array<any>): Observable<any> {
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/roles/api/users/${userId}/roles-permissions` : `/roles/api/users/${userId}/roles-permissions`;
+    const url = cleaned ? `${cleaned}/api/users/${userId}/roles-permissions` : `/api/users/${userId}/roles-permissions`;
     return this.http.put<any>(url, { assignments }, { headers: { 'Content-Type': 'application/json' } });
   }
 }

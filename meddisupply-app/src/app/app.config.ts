@@ -15,6 +15,7 @@ import { SecurityUsersComponent } from './components/web/security-users/security
 import { ProvidersRegistrationComponent } from './components/web/providers-registration/providers-registration.component';
 import { SellersRegistrationComponent } from './components/web/sellers-registration/sellers-registration.component';
 import { UsersRegistrationComponent } from './components/web/users-registration/users-registration.component';
+import { AssignManagerComponent } from './components/web/assign-manager/assign-manager.component';
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'login' },
@@ -29,6 +30,7 @@ const routes: Routes = [
     { path: 'sellers-registration', component: SellersRegistrationComponent },
       { path: 'product-management', component: ProductManagementComponent },
       { path: 'purchase-management', component: PurchaseManagementComponent },
+  { path: 'assign-manager', component: AssignManagerComponent },
       { path: 'sales-clients', component: SalesClientsComponent },
       { path: 'logistics-inventory', component: LogisticsInventoryComponent },
   { path: 'security-audit', component: SecurityUsersComponent },
