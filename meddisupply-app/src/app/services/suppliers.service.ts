@@ -25,7 +25,7 @@ export class SuppliersService {
   getSuppliers(filters?: { country?: string; business_name?: string }): Observable<SupplierListResponse> {
      console.log('getSuppliers');
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-  const url = cleaned ? `${cleaned}/crm/api/v1/suppliers` : `/crm/api/v1/suppliers`;
+  const url = cleaned ? `${cleaned}/api/v1/suppliers` : `/api/v1/suppliers`;
   //const url = 'http://52.55.197.150/crm/api/v1/suppliers';
     let params = new HttpParams();
     if (filters?.country) params = params.set('country', filters.country);
@@ -36,7 +36,7 @@ export class SuppliersService {
 
   createSupplier(formData: FormData): Observable<SupplierCreateResponse> {
     const cleaned = (this.baseUrl || '').replace(/\/+$/, '');
-    const url = cleaned ? `${cleaned}/crm/api/v1/suppliers` : `/crm/api/v1/suppliers`;
+    const url = cleaned ? `${cleaned}/api/v1/suppliers` : `/api/v1/suppliers`;
     return this.http.post<SupplierCreateResponse>(url, formData);
   }
 }
