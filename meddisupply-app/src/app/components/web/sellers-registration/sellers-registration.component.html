@@ -41,6 +41,12 @@
       </div>
       <p class="muted">Lista de clientes asociados al vendedor autenticado.</p>
 
+      <!-- If admin views this page and there are no clients, show guidance -->
+      <div *ngIf="canAssignManagers && (!clients || clients.length === 0)" class="alert info" style="margin-top:8px; padding:10px; border-radius:6px; background:#eef7ff; color:#084298;">
+        <strong>Nota:</strong>
+        Ingresa como Vendedor para ver tus clientes o usa la opción <a routerLink="/app/assign-manager" class="underline">Asignar gerente</a> para gestionar todos los clientes.
+      </div>
+
       <div class="table-wrap">
         <table class="sellers-table">
           <thead>

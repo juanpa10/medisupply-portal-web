@@ -137,6 +137,25 @@ export class NavbarComponent implements OnInit {
         const parsed = JSON.parse(rawRoles);
         // if parsed is an object (single user), extract roles array
         const roles = Array.isArray(parsed) ? parsed : (parsed && parsed.roles) ? parsed.roles : [];
+
+        // If the stored auth role is not security_admin, show the first role from the stored roles list
+        try {
+          const currentAuth = localStorage.getItem('meddisupply_auth');
+          if (currentAuth) {
+            const authObj = JSON.parse(currentAuth);
+            const authRole = (authObj && authObj.role) ? authObj.role.toString().toLowerCase() : null;
+            if (authRole !== 'security_admin' && Array.isArray(roles) && roles.length > 0) {
+              // prefer common fields for role name, with fallbacks
+              const first = roles[0] || {};
+              this.role = (first.name || first.nombre || first.role || first.displayName || first.display_name || '').toString();
+            }
+          }
+        } catch (inner) {
+          // non-fatal: if parsing fails, just continue
+          console.warn('Failed to read meddisupply_auth while choosing display role', inner);
+        }
+
+        // compute flags from the roles array
         this.computeFlagsFromRoles(roles);
       } else if (this.role) {
         // fallback: simple role string mapping

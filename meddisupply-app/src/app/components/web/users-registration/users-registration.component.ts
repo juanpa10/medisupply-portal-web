@@ -37,8 +37,8 @@ export class UsersRegistrationComponent implements OnInit {
       phone: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]],
       idNumber: ['', Validators.required],
       role: ['Vendedor', Validators.required],
-      password: ['Secreta#123', Validators.required],
-      confirmPassword: ['Secreta#123', Validators.required]
+      password: ['', Validators.required],
+      confirmPassword: ['', Validators.required]
     });
 
     // Add group-level validator to ensure password and confirmPassword match
@@ -104,10 +104,44 @@ export class UsersRegistrationComponent implements OnInit {
         password: payload.password
       };
 
+      // Create roles entry in the roles service and then assign roles to the created role-user
       this.rolesSvc.createRoleUser(rolePayload).pipe(
         catchError(err => { console.warn('roles create failed', err); return of(null); })
-      ).subscribe(() => {
-        // no-op; we continue flow below (manager creation or redirect)
+      ).subscribe((roleRes: any | null) => {
+        try {
+          const createdRoleUser = roleRes?.data ?? roleRes ?? null;
+          const roleUserId = createdRoleUser?.id ?? null;
+          if (roleUserId) {
+            // Map common role names to role IDs used by the security UI (same mapping as SecurityUsersComponent)
+            const roleNameToId: Record<string, number> = {
+              'compras': 1,
+              'vendedor': 2,
+              'clientes': 3,
+              'logística': 4,
+              'admin': 5
+            };
+
+            const roleKey = (payload.role || '').toString().toLowerCase();
+            const roleId = roleNameToId[roleKey] ?? null;
+
+            // Build assignments array following the shape used by the security users component
+            const assignments = roleId ? [
+              { role_id: roleId, can_create: false, can_edit: false, can_delete: false, can_view: true }
+            ] : [];
+
+            if (assignments.length > 0) {
+              this.rolesSvc.assignRolesToUser(roleUserId, assignments).pipe(
+                catchError(err => { console.warn('assignRolesToUser failed', err); return of(null); })
+              ).subscribe(() => {
+                // assignment completed (or failed silently)
+              });
+            } else {
+              console.warn('No role mapping found for role:', payload.role);
+            }
+          }
+        } catch (err) {
+          console.warn('Failed to process role creation response', err);
+        }
       });
 
       if (payload.role === 'Vendedor') {
@@ -127,7 +161,8 @@ export class UsersRegistrationComponent implements OnInit {
 
           // both user and manager created successfully
           this.successMessage = 'Usuario y vendedor registrados correctamente.';
-          this.form.reset({ role: 'Vendedor', password: 'Secreta#123', confirmPassword: 'Secreta#123' });
+          // reset form but don't prefill passwords
+          this.form.reset({ role: 'Vendedor' });
           // keep success message visible a bit longer so user sees it before redirect
           setTimeout(() => (this.successMessage = null), 3000);
           setTimeout(() => { try { this.router.navigate(['/login']); } catch (e) { /* ignore navigation error */ } }, 3500);
@@ -136,7 +171,8 @@ export class UsersRegistrationComponent implements OnInit {
         // Not a vendor — just finish
         this.loading = false;
   this.successMessage = 'Usuario registrado correctamente.';
-  this.form.reset({ role: 'Vendedor', password: 'Secreta#123', confirmPassword: 'Secreta#123' });
+  // reset form but don't prefill passwords
+  this.form.reset({ role: 'Vendedor' });
   // keep success message visible a bit longer so user sees it before redirect
   setTimeout(() => (this.successMessage = null), 3000);
   setTimeout(() => { try { this.router.navigate(['/login']); } catch (e) { /* ignore navigation error */ } }, 3500);
