@@ -23,6 +23,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/v1/inventory": {
+    "target": "http://52.55.197.150/inventory",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api/users-with-roles": {
     "target": "http://52.55.197.150/roles",
     "secure": false,
