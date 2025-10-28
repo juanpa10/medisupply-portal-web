@@ -10,6 +10,7 @@ import { ProductManagementComponent } from './components/web/product-management/
 import { PurchaseManagementComponent } from './components/web/purchase-management/purchase-management.component';
 import { SalesClientsComponent } from './components/web/sales-clients/sales-clients.component';
 import { LogisticsInventoryComponent } from './components/web/logistics-inventory/logistics-inventory.component';
+import { InventorySearchUiComponent } from './components/web/inventory-search/inventory-search-ui.component';
 import { SecurityAuditComponent } from './components/web/security-audit/security-audit.component';
 import { SecurityUsersComponent } from './components/web/security-users/security-users.component';
 import { ProvidersRegistrationComponent } from './components/web/providers-registration/providers-registration.component';
@@ -32,7 +33,7 @@ const routes: Routes = [
       { path: 'purchase-management', component: PurchaseManagementComponent },
   { path: 'assign-manager', component: AssignManagerComponent },
       { path: 'sales-clients', component: SalesClientsComponent },
-      { path: 'logistics-inventory', component: LogisticsInventoryComponent },
+  { path: 'logistics-inventory', component: InventorySearchUiComponent },
   { path: 'security-audit', component: SecurityUsersComponent },
       { path: 'security-users', component: SecurityUsersComponent }
     ]
