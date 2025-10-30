@@ -49,11 +49,11 @@ import { ReportsService } from '../../../services/reports.service';
           <h3 class="font-semibold mb-2">Top 5</h3>
           <table class="w-full table-auto border-collapse">
             <thead>
-              <tr class="text-left border-b"><th>Elemento</th><th>Total</th></tr>
+              <tr class="text-left border-b"><th>{{ top5Label || 'Elemento' }}</th><th>Total</th></tr>
             </thead>
             <tbody>
               <tr *ngFor="let t of report.top5" class="border-b">
-                <td class="py-2">{{ t.product || t.name || t.key }}</td>
+                <td class="py-2">{{ getTop5Name(t) }}</td>
                 <td class="py-2">{{ t.total }}</td>
               </tr>
             </tbody>
@@ -122,6 +122,9 @@ export class ReportsComponent implements OnInit {
   loading = false;
   report: any = null;
   error: string | null = null;
+  // top5 rendering helpers
+  top5Key: string | null = null;
+  top5Label: string | null = null;
   // Chart-related
   chartWidth = 700;
   chartHeight = 220;
@@ -222,10 +225,11 @@ export class ReportsComponent implements OnInit {
 
     const v = this.form.value;
     // Map UI values to API expected criterion values
+    // Note: user requested: 'comercial' -> 'salesperson', 'region' (Zona geográfica) -> 'zone'
     const mapping: Record<string, string> = {
-      'comercial': 'commercial',
+      'comercial': 'salesperson',
       'product': 'product',
-      'region': 'region'
+      'region': 'zone'
     };
 
     const payload = {
@@ -241,6 +245,8 @@ export class ReportsComponent implements OnInit {
     this.reportsSvc.generateReport(payload).subscribe({
       next: (res: any) => {
         this.report = res;
+        // compute a display label and key for top5 items
+        this.computeTop5Meta();
         this.loading = false;
         // build chart for daily series if present
         try {
@@ -259,5 +265,46 @@ export class ReportsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  private computeTop5Meta() {
+    this.top5Key = null;
+    this.top5Label = null;
+    try {
+      const top5 = (this.report && Array.isArray(this.report.top5)) ? this.report.top5 : [];
+      if (top5.length === 0) return;
+      // pick the first key that is not 'total'
+      const first = top5[0];
+      const keys = Object.keys(first).filter(k => k !== 'total');
+      if (keys.length > 0) {
+        this.top5Key = keys[0];
+        // human-readable label mapping
+        const map: Record<string, string> = {
+          salesperson: 'Comercial',
+          sales_person: 'Comercial',
+          salesperson_name: 'Comercial',
+          zone: 'Zona geográfica',
+          region: 'Zona',
+          product: 'Producto',
+          name: 'Nombre',
+          key: 'Elemento'
+        };
+        this.top5Label = map[this.top5Key] ?? this.titleize(this.top5Key);
+      }
+    } catch (e) {
+      // noop
+    }
+  }
+
+  // safe accessor for top5 display name
+  getTop5Name(item: any) {
+    if (!item) return '';
+    if (this.top5Key && item[this.top5Key] !== undefined) return item[this.top5Key];
+    return item.product ?? item.name ?? item.key ?? '';
+  }
+
+  private titleize(s: string | null) {
+    if (!s) return '';
+    return s.replace(/[_-]/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   }
 }
