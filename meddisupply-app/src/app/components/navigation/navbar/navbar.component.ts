@@ -8,7 +8,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
   standalone: true,
   imports: [RouterModule, CommonModule],
   template: `
-    <header class="bg-white shadow-md">
+  <header class="bg-white shadow-md app-header">
       <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-3">
           <img src="/assets/logo-login.png" alt="Logo" class="h-10 mx-auto" />
@@ -35,7 +35,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
     </header>
 
     <div class="app-body flex flex-1">
-      <aside class="w-64 bg-gray-50 border-r hidden md:block">
+      <aside class="w-64 bg-gray-50 border-r hidden md:block app-aside">
         <div class="p-4">
           <ul class="space-y-2">
             <li *ngIf="canViewProviders"><a routerLink="/app/providers-registration" class="block p-2 rounded hover:bg-gray-100 flex items-center gap-2"><span class="icon inline"> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline-block; vertical-align:middle" aria-hidden="true"><path d="M3 7h18M3 12h18M3 17h18"></path></svg></span>Registrar proveedores</a></li>
@@ -50,7 +50,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
         </div>
       </aside>
 
-      <main class="flex-1 p-6">
+      <main class="flex-1 p-6 app-main">
         <router-outlet></router-outlet>
       </main>
     </div>
@@ -58,6 +58,23 @@ import { IconComponent } from '../../shared/icon/icon.component';
   styles: [
     `:host { display: block; min-height: 100vh; }
     .container { max-width: 1200px; }
+
+   /* Use sticky layout instead of fixed to avoid overlaying interactive elements.
+     - header (.app-header) is sticky at the top of its container
+     - aside (.app-aside) is sticky beneath the header on md+ screens and scrollable
+     - main stays in the normal flow; no manual padding/margin required
+   */
+   .app-header { position: sticky; top: 0; left: 0; right: 0; z-index: 50; pointer-events: auto; }
+
+   /* Ensure page content starts below the header so elements at the top are not covered
+     by the sticky header (which can overlay when stuck). Adjust the 64px if your
+     header height changes. */
+   .app-body { padding-top: 64px; }
+
+   /* Only apply sidebar sticky behavior from md up; the aside element already uses hidden md:block */
+   @media (min-width: 768px) {
+    .app-aside { position: sticky; top: 64px; height: calc(100vh - 64px); overflow-y: auto; }
+   }
     `
   ]
 })

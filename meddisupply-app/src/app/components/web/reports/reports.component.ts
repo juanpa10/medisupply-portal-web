@@ -9,9 +9,11 @@ import { ReportsService } from '../../../services/reports.service';
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <section>
-      <h1 class="text-2xl font-bold mb-4">Generar reporte de ventas</h1>
+      <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+          <h1 class="text-2xl font-bold mb-4 text-left">Generar reporte de ventas</h1>
 
-      <form [formGroup]="form" (ngSubmit)="generate()" class="bg-white p-4 rounded shadow max-w-3xl">
+          <form [formGroup]="form" (ngSubmit)="generate()" class="bg-white p-6 rounded shadow w-full">
         <label class="block mb-2">Seleccionar criterio</label>
         <select formControlName="criterion" class="border p-2 rounded w-full mb-4">
           <option value="comercial">Comercial</option>
@@ -19,7 +21,7 @@ import { ReportsService } from '../../../services/reports.service';
           <option value="region">Zona geográfica</option>
         </select>
 
-        <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label class="block mb-1">Fecha inicio</label>
             <input type="date" formControlName="start" class="border p-2 rounded w-full" />
@@ -31,10 +33,11 @@ import { ReportsService } from '../../../services/reports.service';
         </div>
 
         <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded" [disabled]="loading">Generar reporte</button>
-      </form>
+  </form>
+  </div>
 
-      <div *ngIf="report" class="mt-6 max-w-3xl">
-        <div class="bg-white p-4 rounded shadow">
+  <div *ngIf="report" class="mt-6 space-y-4 max-w-5xl mx-auto">
+        <div class="bg-white p-6 rounded shadow w-full">
           <h2 class="text-lg font-semibold mb-2">Resumen</h2>
           <p><strong>Criterio:</strong> {{ report.criterion }}</p>
           <p><strong>Desde:</strong> {{ report.start }} — <strong>Hasta:</strong> {{ report.end }}</p>
@@ -42,7 +45,7 @@ import { ReportsService } from '../../../services/reports.service';
           <p *ngIf="report.pct_change !== null"><strong>Variación %:</strong> {{ report.pct_change }}</p>
         </div>
 
-        <div *ngIf="report.top5?.length" class="bg-white p-4 rounded shadow mt-4">
+  <div *ngIf="report.top5?.length" class="bg-white p-6 rounded shadow mt-4 w-full">
           <h3 class="font-semibold mb-2">Top 5</h3>
           <table class="w-full table-auto border-collapse">
             <thead>
@@ -57,12 +60,13 @@ import { ReportsService } from '../../../services/reports.service';
           </table>
         </div>
 
-        <div *ngIf="report.daily?.length" class="bg-white p-4 rounded shadow mt-4">
+  <div *ngIf="report.daily?.length" class="bg-white p-6 rounded shadow mt-4 w-full">
           <h3 class="font-semibold mb-2">Diario</h3>
 
           <!-- Inline SVG chart -->
           <div class="mb-4 overflow-auto">
-            <svg [attr.width]="chartWidth" [attr.height]="chartHeight" class="w-full h-auto" role="img" aria-label="Gráfico diario de ventas">
+            <div class="w-full">
+              <svg [attr.width]="chartWidth" [attr.height]="chartHeight" [attr.viewBox]="'0 0 ' + chartWidth + ' ' + chartHeight" [style.height.px]="chartHeight" role="img" aria-label="Gráfico diario de ventas">
               <defs>
                 <linearGradient id="grad" x1="0" x2="0" y1="0" y2="1">
                   <stop offset="0%" stop-color="#60A5FA" stop-opacity="0.6"></stop>
@@ -90,7 +94,8 @@ import { ReportsService } from '../../../services/reports.service';
                 <text x="6" [attr.y]="y.y" font-size="10" fill="#374151">{{ y.text }}</text>
                 <line x1="30" [attr.x2]="chartWidth - 10" [attr.y1]="y.y" [attr.y2]="y.y" stroke="#E5E7EB" stroke-width="1"></line>
               </g>
-            </svg>
+              </svg>
+            </div>
           </div>
 
           <table class="w-full table-auto border-collapse text-sm">
@@ -105,9 +110,10 @@ import { ReportsService } from '../../../services/reports.service';
             </tbody>
           </table>
         </div>
-      </div>
+  </div>
+  </div>
 
-      <div *ngIf="error" class="mt-4 text-red-600">{{ error }}</div>
+  <div *ngIf="error" class="mt-4 text-red-600">{{ error }}</div>
     </section>
   `
 })
