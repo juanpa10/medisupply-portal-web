@@ -9,6 +9,7 @@ import { NavbarComponent } from './components/navigation/navbar/navbar.component
 import { ProductManagementComponent } from './components/web/product-management/product-management.component';
 import { PurchaseManagementComponent } from './components/web/purchase-management/purchase-management.component';
 import { SalesClientsComponent } from './components/web/sales-clients/sales-clients.component';
+import { ReportsComponent } from './components/web/reports/reports.component';
 import { LogisticsInventoryComponent } from './components/web/logistics-inventory/logistics-inventory.component';
 import { InventorySearchUiComponent } from './components/web/inventory-search/inventory-search-ui.component';
 import { SecurityAuditComponent } from './components/web/security-audit/security-audit.component';
@@ -32,7 +33,7 @@ const routes: Routes = [
       { path: 'product-management', component: ProductManagementComponent },
       { path: 'purchase-management', component: PurchaseManagementComponent },
   { path: 'assign-manager', component: AssignManagerComponent },
-      { path: 'sales-clients', component: SalesClientsComponent },
+  { path: 'sales-clients', component: ReportsComponent },
   { path: 'logistics-inventory', component: InventorySearchUiComponent },
   { path: 'security-audit', component: SecurityUsersComponent },
       { path: 'security-users', component: SecurityUsersComponent }

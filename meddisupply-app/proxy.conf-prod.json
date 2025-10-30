@@ -1,54 +1,54 @@
 {
   "/api/v1/managers": {
-    "target": "http://localhost:9005",
+    "target": "http://52.55.197.150/managers",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/v1/clients": {
-    "target": "http://localhost:9005",
+    "target": "http://52.55.197.150/managers",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/v1/clients-with-manager": {
-    "target": "http://localhost:9005",
+    "target": "http://52.55.197.150/managers",
     "secure": false,
-    "changeOrigin": false,
+    "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/v1/suppliers": {
-    "target": "http://localhost:9004",
+    "target": "http://52.55.197.150/crm",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/v1/inventory": {
-    "target": "http://localhost:9008",
+    "target": "http://52.55.197.150/inventory",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/users-with-roles": {
-    "target": "http://localhost:9003",
+    "target": "http://52.55.197.150/roles",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/api/users": {
-    "target": "http://localhost:9003",
+    "target": "http://52.55.197.150/roles",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/auth": {
-    "target": "http://localhost:9001",
+    "target": "http://52.55.197.150",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/auth/login": {
-    "target": "http://localhost:9001",
+    "target": "http://52.55.197.150",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

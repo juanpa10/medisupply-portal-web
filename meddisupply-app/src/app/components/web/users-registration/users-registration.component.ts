@@ -115,9 +115,9 @@ export class UsersRegistrationComponent implements OnInit {
             // Map common role names to role IDs used by the security UI (same mapping as SecurityUsersComponent)
             const roleNameToId: Record<string, number> = {
               'compras': 1,
-              'vendedor': 2,
-              'clientes': 3,
-              'logística': 4,
+              'Vendedor': 2,
+              'Cliente': 3,
+              'Logística': 4,
               'admin': 5
             };
 
