@@ -112,11 +112,9 @@ interface Product {
                 <tr>
                   <th>Código</th>
                   <th>Nombre</th>
-                  <th>Descripción</th>
-                  <th>Precio compra</th>
                   <th>Precio venta</th>
-                  <th>Categoría</th>
-                  <th>Proveedor</th>
+                  <th>Id Categoría</th>
+                  <th>Id Proveedor</th>
                   <th>Fecha registro</th>
                 </tr>
               </thead>
@@ -124,15 +122,13 @@ interface Product {
                 <tr *ngFor="let p of products">
                   <td>{{ p.codigo }}</td>
                   <td>{{ p.nombre }}</td>
-                  <td>{{ p.descripcion }}</td>
-                  <td>\${{ p.precio_compra }}</td>
                   <td>\${{ p.precio_venta }}</td>
                   <td>{{ p.categoria_id }}</td>
                   <td>{{ p.proveedor_id }}</td>
                   <td>{{ formatDate(p.created_at) }}</td>
                 </tr>
                 <tr *ngIf="products.length === 0">
-                  <td colspan="8" class="text-center muted">No hay productos registrados</td>
+                  <td colspan="6" class="text-center muted">No hay productos registrados</td>
                 </tr>
               </tbody>
             </table>
