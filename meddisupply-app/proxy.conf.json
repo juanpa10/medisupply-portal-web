@@ -29,6 +29,18 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/api/v1/products": {
+    "target": "http://localhost:9008",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api/v1/products/bulk-upload": {
+    "target": "http://localhost:9008",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/api/users-with-roles": {
     "target": "http://localhost:9003",
     "secure": false,

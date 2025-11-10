@@ -95,6 +95,44 @@ interface Product {
               </div>
             </div>
           </form>
+
+          <!-- Bulk Upload Section -->
+          <div class="bulk-upload-card">
+            <h5>Carga masiva de productos</h5>
+            <p class="muted">Sube un archivo CSV con múltiples productos para registrarlos de forma masiva.</p>
+            
+            <div *ngIf="bulkUploadMessage" class="alert" [ngClass]="bulkUploadSuccess ? 'success' : 'error'">
+              {{ bulkUploadMessage }}
+            </div>
+
+            <div class="bulk-upload-section">
+              <input 
+                type="file" 
+                #csvFileInput 
+                accept=".csv" 
+                (change)="onCsvFileSelected($event)" 
+                class="file-input" 
+                style="display: none;" 
+              />
+              <button 
+                type="button" 
+                class="btn ghost" 
+                (click)="csvFileInput.click()" 
+                [disabled]="bulkUploading">
+                📁 Seleccionar CSV
+              </button>
+              <button 
+                type="button" 
+                class="btn primary" 
+                (click)="uploadBulkProducts()" 
+                [disabled]="!selectedCsvFile || bulkUploading"
+                *ngIf="selectedCsvFile">
+                📤 Subir productos
+              </button>
+              <span *ngIf="selectedCsvFile && !bulkUploading" class="file-name">{{ selectedCsvFile.name }}</span>
+              <span *ngIf="bulkUploading" class="muted">Subiendo...</span>
+            </div>
+          </div>
         </section>
 
         <section class="card table-card">
@@ -141,6 +179,27 @@ interface Product {
                 </tr>
               </tbody>
             </table>
+
+            <!-- Pagination Controls -->
+            <div *ngIf="!loadingProducts && !productLoadError && products.length > 0" class="pagination-controls">
+              <button 
+                class="btn pagination-btn" 
+                [disabled]="currentPage <= 1" 
+                (click)="previousPage()">
+                ‹ Anterior
+              </button>
+              
+              <span class="pagination-info">
+                Página {{ currentPage }} de {{ totalPages || 1 }}
+              </span>
+              
+              <button 
+                class="btn pagination-btn" 
+                [disabled]="currentPage >= totalPages || products.length < perPage" 
+                (click)="nextPage()">
+                Siguiente ›
+              </button>
+            </div>
           </div>
         </section>
       </div>
@@ -303,12 +362,83 @@ interface Product {
       color: #666;
     }
     
+    .bulk-upload-card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid #e9ecef;
+    }
+    
+    .bulk-upload-card h5 {
+      margin: 0 0 8px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .bulk-upload-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    .file-name {
+      font-size: 12px;
+      color: #666;
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      background: #fff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    
     .per-page-select {
       padding: 6px 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 14px;
       background: white;
+    }
+    
+    .pagination-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+      padding: 16px 0;
+    }
+    
+    .pagination-btn {
+      padding: 8px 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: white;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      background: #f0f0f0;
+      color: #333;
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination-info {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
     }
   `]
 })
@@ -319,6 +449,14 @@ export class ProductManagementComponent implements OnInit {
   loadingProducts = false;
   productLoadError: string | null = null;
   perPage: number = 10; // Default to 10 products per page
+  currentPage: number = 1;
+  totalPages: number = 1;
+
+  // Bulk upload properties
+  selectedCsvFile: File | null = null;
+  bulkUploading = false;
+  bulkUploadMessage: string | null = null;
+  bulkUploadSuccess = false;
 
   products: Product[] = [];
   successMessage: string | null = null;
@@ -406,7 +544,7 @@ export class ProductManagementComponent implements OnInit {
     this.loadingProducts = true;
     this.productLoadError = null;
 
-    this.productsService.getProducts(1, this.perPage).pipe(
+    this.productsService.getProducts(this.currentPage, this.perPage).pipe(
       catchError(error => {
         console.error('Error loading products:', error);
         return of({ error: true, message: error });
@@ -418,7 +556,15 @@ export class ProductManagementComponent implements OnInit {
           this.productLoadError = 'Error al cargar productos. Por favor intenta nuevamente.';
         } else {
           // Handle both array response and paginated response
-          this.products = Array.isArray(response) ? response : (response.data || response.results || []);
+          if (Array.isArray(response)) {
+            this.products = response;
+            // If we got less than perPage products, we're probably on the last page
+            this.totalPages = this.currentPage;
+          } else {
+            this.products = response.data || response.results || [];
+            // Extract pagination info if available
+            this.totalPages = response.total_pages || response.totalPages || Math.ceil((response.total || response.count || this.products.length) / this.perPage);
+          }
         }
       },
       error: (error) => {
@@ -429,7 +575,22 @@ export class ProductManagementComponent implements OnInit {
   }
 
   onPerPageChange() {
+    this.currentPage = 1; // Reset to first page when changing page size
     this.loadProducts();
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages && this.products.length >= this.perPage) {
+      this.currentPage++;
+      this.loadProducts();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadProducts();
+    }
   }
 
   formatDate(dateStr: string | undefined): string {
@@ -440,6 +601,61 @@ export class ProductManagementComponent implements OnInit {
     } catch {
       return dateStr;
     }
+  }
+
+  onCsvFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file && file.type === 'text/csv') {
+      this.selectedCsvFile = file;
+      this.bulkUploadMessage = null;
+    } else {
+      this.selectedCsvFile = null;
+      this.bulkUploadMessage = 'Por favor selecciona un archivo CSV válido.';
+      this.bulkUploadSuccess = false;
+    }
+  }
+
+  uploadBulkProducts() {
+    if (!this.selectedCsvFile) {
+      this.bulkUploadMessage = 'Por favor selecciona un archivo CSV primero.';
+      this.bulkUploadSuccess = false;
+      return;
+    }
+
+    this.bulkUploading = true;
+    this.bulkUploadMessage = null;
+
+    this.productsService.bulkUploadProducts(this.selectedCsvFile).pipe(
+      catchError(error => {
+        console.error('Error uploading bulk products:', error);
+        return of({ error: true, message: error });
+      })
+    ).subscribe({
+      next: (response) => {
+        this.bulkUploading = false;
+        if (response.error) {
+          this.bulkUploadMessage = this.extractErrorMessage(response.message);
+          this.bulkUploadSuccess = false;
+        } else {
+          this.bulkUploadMessage = `Productos cargados exitosamente. ${response.created || response.count || 'Varios'} productos fueron creados.`;
+          this.bulkUploadSuccess = true;
+          this.selectedCsvFile = null;
+          
+          // Reset file input
+          const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+          if (fileInput) {
+            fileInput.value = '';
+          }
+          
+          this.loadProducts(); // Reload the products list
+        }
+      },
+      error: (error) => {
+        this.bulkUploading = false;
+        this.bulkUploadMessage = this.extractErrorMessage(error);
+        this.bulkUploadSuccess = false;
+      }
+    });
   }
 
   private extractErrorMessage(error: any): string {
