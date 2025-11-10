@@ -13,7 +13,7 @@ export class ProductsService {
     return this.http.post('inventory/api/v1/products', formData);
   }
 
-  getProducts(page: number = 1, perPage: number = 30): Observable<any> {
+  getProducts(page: number = 1, perPage: number = 10): Observable<any> {
     return this.http.get(`inventory/api/v1/products?page=${page}&per_page=${perPage}`);
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup, FormsModule } from '@angular/forms';
 import { ProductsService } from '../../../services/products.service';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -24,7 +24,7 @@ interface Product {
 @Component({
   selector: 'app-product-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   template: `
     <div class="products-page">
       <div class="content">
@@ -100,6 +100,15 @@ interface Product {
         <section class="card table-card">
           <h4>Productos registrados</h4>
           <p class="muted">Lista de todos los productos registrados en el sistema.</p>
+
+          <div class="table-controls">
+            <label for="perPageSelect" class="per-page-label">Mostrar:</label>
+            <select id="perPageSelect" [(ngModel)]="perPage" (change)="onPerPageChange()" class="per-page-select">
+              <option value="10">10 productos</option>
+              <option value="20">20 productos</option>
+              <option value="30">30 productos</option>
+            </select>
+          </div>
 
           <div class="table-wrap">
             <div *ngIf="loadingProducts" class="muted">Cargando productos...</div>
@@ -281,6 +290,26 @@ interface Product {
     .text-center {
       text-align: center;
     }
+    
+    .table-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    
+    .per-page-label {
+      font-weight: 500;
+      color: #666;
+    }
+    
+    .per-page-select {
+      padding: 6px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      background: white;
+    }
   `]
 })
 export class ProductManagementComponent implements OnInit {
@@ -289,6 +318,7 @@ export class ProductManagementComponent implements OnInit {
   errorMessage: string | null = null;
   loadingProducts = false;
   productLoadError: string | null = null;
+  perPage: number = 10; // Default to 10 products per page
 
   products: Product[] = [];
   successMessage: string | null = null;
@@ -376,7 +406,7 @@ export class ProductManagementComponent implements OnInit {
     this.loadingProducts = true;
     this.productLoadError = null;
 
-    this.productsService.getProducts().pipe(
+    this.productsService.getProducts(1, this.perPage).pipe(
       catchError(error => {
         console.error('Error loading products:', error);
         return of({ error: true, message: error });
@@ -396,6 +426,10 @@ export class ProductManagementComponent implements OnInit {
         this.productLoadError = 'Error al cargar productos. Por favor intenta nuevamente.';
       }
     });
+  }
+
+  onPerPageChange() {
+    this.loadProducts();
   }
 
   formatDate(dateStr: string | undefined): string {
